@@ -190,6 +190,36 @@ Backbone.StateMachine = (function(Backbone, _) {
 }(Backbone, _));
 
 
+// A Backbone router that is also a state machine.
+Backbone.StatefulRouter = (function(Backbone, _){
+
+    var StatefulRouter = function(options) {
+        this.startStateMachine(options);
+        Backbone.Router.prototype.constructor.apply(this, arguments);
+    };
+    // Fix instanceof for StatefulRouter
+    var sfvProto = StatefulRouter.prototype = new Backbone.Router();
+    delete sfvProto.options;
+
+    _.extend(StatefulRouter.prototype, Backbone.Router.prototype, Backbone.StateMachine, {
+
+        toState: function(name) {
+            if (this.el) {
+                $(this.el).removeClass((this.stateClassName || ''));
+                this.stateClassName = (this._states[name].className || name);
+                $(this.el).addClass(this.stateClassName);
+            }
+            Backbone.StateMachine.toState.apply(this, arguments);
+        }
+    });
+
+    // Set up inheritance for StatefulRouter.
+    StatefulRouter.extend = Backbone.Router.extend;
+
+    return StatefulRouter;
+}(Backbone, _));
+
+
 // A Backbone view that is also a state machine.
 Backbone.StatefulView = (function(Backbone, _){
 

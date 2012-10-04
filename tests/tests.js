@@ -144,6 +144,30 @@ $(document).ready(function(){
         var eventSender = {};
         _.extend(eventSender, Backbone.Events);
 
+    // StatefulRouter
+    (function(){
+        var Router = Backbone.StatefulRouter.extend({
+            routes: {
+                'posts': 'posts',
+                'posts/:id': 'showPost'
+            }
+        });
+
+        var router;
+
+        module('StatefulRouter', {
+            setup: function(){
+                Backbone.history = null;
+                router = new Backbone.StatefulRouter();
+                Backbone.history.start({pushState: false});
+            }
+        });
+
+        test('transition shoud trigger route', function(){
+            ok(false);
+        });
+    }());
+
     module('StatefulView');
         
         var TestStatefulView = Backbone.StatefulView.extend({
